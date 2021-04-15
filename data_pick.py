@@ -17,7 +17,7 @@ class MyWindow:
         self.window = Tk()
         self.window.title('Data Pick')
         self.window.geometry('600x400')
-        # window.resizable(width=False, height=False)
+        self.window.resizable(width=False, height=False)
 
         Label(self.window, text='开始').grid(row=0, column=0, stick="we", padx=5, pady=5)
         Label(self.window, text='键值').grid(row=0, column=1, stick="we", padx=5, pady=5)
@@ -83,14 +83,14 @@ class MyWindow:
         key_flag = 0
         key_str = ''
         if len(path) == 0:
-            tkinter.messagebox.showwarning('提示','路径为空')
+            tkinter.messagebox.showwarning('提示', '路径为空')
             return
 
         for i in range(self.count):
             if len(self.ent_m[i].get()) != 0:
                 key_flag = 1
         if key_flag == 0:
-            tkinter.messagebox.showwarning('提示','键值为空')
+            tkinter.messagebox.showwarning('提示', '键值为空')
             return
 
         try:
@@ -112,7 +112,7 @@ class MyWindow:
                     if len(tail) == 0:
                         tail = '.txt'
                     if os.path.splitext(filename)[1] == tail:
-                        f_obj = open(dirpath + '\/' + filename, 'rt')
+                        f_obj = open(dirpath + '\\' + filename, 'rt')
                         s_read = f_obj.read()
                         f_obj.close()
                         t_obj.write(filename + ',')  # write file name
@@ -121,24 +121,24 @@ class MyWindow:
                             key_str = self.ent_m[i].get()
                             end_str = self.ent_e[i].get()
                             if len(key_str) != 0:
-                                    pos = 0
-                                    if len(pre_str) != 0:
-                                        pos = s_read.find(pre_str)
-                                    if pos != -1:
-                                        pos_s = s_read.find(key_str, pos)
-                                        pos_e = 0
-                                        if pos_s != -1:
-                                            pos_s = pos_s + len(key_str)
-                                            if len(end_str) != 0:
-                                                pos_e = s_read.find(end_str, pos_s)
-                                            else:
-                                                pos_e = s_read.find('\n', pos_s)
-                                        if pos_s != -1 and pos_e != -1:
-                                            t_obj.write(s_read[pos_s:pos_e] + ',')
+                                pos = 0
+                                if len(pre_str) != 0:
+                                    pos = s_read.find(pre_str)
+                                if pos != -1:
+                                    pos_s = s_read.find(key_str, pos)
+                                    pos_e = 0
+                                    if pos_s != -1:
+                                        pos_s = pos_s + len(key_str)
+                                        if len(end_str) != 0:
+                                            pos_e = s_read.find(end_str, pos_s)
                                         else:
-                                            t_obj.write(',')
+                                            pos_e = s_read.find('\n', pos_s)
+                                    if pos_s != -1 and pos_e != -1:
+                                        t_obj.write(s_read[pos_s:pos_e] + ',')
                                     else:
                                         t_obj.write(',')
+                                else:
+                                    t_obj.write(',')
                         t_obj.write('\n')
 
             t_obj.close()
