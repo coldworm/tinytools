@@ -102,16 +102,18 @@ class MyWindow:
             for i in range(self.count):
                 key_str = self.ent_m[i].get()
                 if len(key_str) != 0:
-                    t_obj.write(key_str.replace(' ', '').replace('=', '')+',')
+                    t_obj.write(key_str.replace(' ', '').replace('=', '').replace(',', '')+',')
             t_obj.write('\n')
 
             # Loop files in the path
+            file_num = 0
             for (dirpath, dirnames, filenames) in os.walk(rootdir):
                 for filename in filenames:
                     tail = self.ent_path_tail.get()
                     if len(tail) == 0:
                         tail = '.txt'
                     if os.path.splitext(filename)[1] == tail:
+                        file_num += 1
                         f_obj = open(dirpath + '\\' + filename, 'rt')
                         s_read = f_obj.read()
                         f_obj.close()
@@ -142,7 +144,7 @@ class MyWindow:
                         t_obj.write('\n')
 
             t_obj.close()
-            tkinter.messagebox.showinfo('结果', '完成')
+            tkinter.messagebox.showinfo('结果', '完成遍历' + str(file_num) + '个文件')
         except Exception as err:
             print(err)
 
