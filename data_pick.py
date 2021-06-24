@@ -4,6 +4,7 @@ import tkinter.messagebox
 import os
 
 CountMax = 7
+Version = '2.0'
 
 
 class MyWindow:
@@ -15,9 +16,9 @@ class MyWindow:
         self.ent_e = []
 
         self.window = Tk()
-        self.window.title('Data Pick')
+        self.window.title('Data Pick ' + Version)
         self.window.geometry('600x400')
-        self.window.resizable(width=False, height=False)
+        # self.window.resizable(width=False, height=False)
 
         Label(self.window, text='开始').grid(row=0, column=0, stick="we", padx=5, pady=5)
         Label(self.window, text='键值').grid(row=0, column=1, stick="we", padx=5, pady=5)
@@ -32,6 +33,9 @@ class MyWindow:
 
         self.bt_add = Button(self.window, text="增加", bg='#008B8B', command=self.add_button, width=4).place(relx=.84, rely=.7, anchor="c")
         self.bt_del = Button(self.window, text="删除", bg='#008B8B', command=self.remove_button, width=4).place(relx=.94, rely=.7, anchor="c")
+        self.skip_flag = BooleanVar()
+        self.skip_flag.set(True)
+        Checkbutton(self.window, text="不显示空数据", variable=self.skip_flag, onvalue=True, offvalue=False).place(relx=.60, rely=.7, anchor="w")
 
         Label(self.window, text='路径').place(relx=.02, rely=.82, anchor="w")
         self.ent_path = Entry(self.window, width=60, state=DISABLED)
@@ -117,7 +121,12 @@ class MyWindow:
                         f_obj = open(dirpath + '\\' + filename, 'rt')
                         s_read = f_obj.read()
                         f_obj.close()
-                        t_obj.write(filename + ',')  # write file name
+                        wt_pos = t_obj.tell()           # save current position
+
+                        full_path = dirpath + '\\' + filename
+                        ind = full_path.index('\\')
+                        t_obj.write(full_path[ind+1:] + ',')     # write file name
+                        found_flag = False
                         for i in range(self.count):
                             pre_str = self.ent_s[i].get()
                             key_str = self.ent_m[i].get()
@@ -137,12 +146,16 @@ class MyWindow:
                                             pos_e = s_read.find('\n', pos_s)
                                     if pos_s != -1 and pos_e != -1:
                                         t_obj.write(s_read[pos_s:pos_e] + ',')
+                                        found_flag = True
                                     else:
                                         t_obj.write(',')
                                 else:
                                     t_obj.write(',')
                         t_obj.write('\n')
-
+                        # haven't found any key value, go back
+                        if not found_flag and self.skip_flag.get():
+                            t_obj.seek(wt_pos, 0)
+            t_obj.truncate()
             t_obj.close()
             tkinter.messagebox.showinfo('结果', '完成遍历' + str(file_num) + '个文件')
         except Exception as err:
