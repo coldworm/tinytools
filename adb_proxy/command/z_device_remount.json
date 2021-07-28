@@ -1,0 +1,22 @@
+{
+    "key": "command",
+    "name": "设备解锁",
+    "cmdlist": [
+        {
+            "id": 1,
+            "run": "adb root",
+            "delay": 0
+        },
+        {
+            "id": 2,
+            "run": "adb shell disable-verity",
+            "delay": 1
+        },
+        {
+            "id": 3,
+            "run": "adb shell reboot",
+            "delay": 0,
+            "remark": "请等待设备重启"
+        }
+    ]
+}

@@ -1,0 +1,12 @@
+{
+    "key": "command",
+    "name": "设备重启",
+    "cmdlist": [
+        {
+            "id": 1,
+            "run": "adb reboot",
+            "delay": 0,
+            "remark": "请等待设备重启"
+        }
+    ]
+}
