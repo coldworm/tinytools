@@ -33,6 +33,9 @@ class MyWindow:
 
         self.bt_add = Button(self.window, text="增加", bg='#008B8B', command=self.add_button, width=4).place(relx=.84, rely=.7, anchor="c")
         self.bt_del = Button(self.window, text="删除", bg='#008B8B', command=self.remove_button, width=4).place(relx=.94, rely=.7, anchor="c")
+        self.repeat_flag = BooleanVar()
+        self.repeat_flag.set(False)
+        Checkbutton(self.window, text="允许键值重复", variable=self.repeat_flag, onvalue=True, offvalue=False).place(relx=.40, rely=.7, anchor="w")
         self.skip_flag = BooleanVar()
         self.skip_flag.set(True)
         Checkbutton(self.window, text="不显示空数据", variable=self.skip_flag, onvalue=True, offvalue=False).place(relx=.60, rely=.7, anchor="w")
@@ -64,7 +67,7 @@ class MyWindow:
             self.ent_s[self.count - 1].destroy()
             self.ent_m[self.count - 1].destroy()
             self.ent_e[self.count - 1].destroy()
-            self.count = self.count-1
+            self.count = self.count - 1
             self.ent_s.pop(-1)
             self.ent_m.pop(-1)
             self.ent_e.pop(-1)
@@ -106,7 +109,7 @@ class MyWindow:
             for i in range(self.count):
                 key_str = self.ent_m[i].get()
                 if len(key_str) != 0:
-                    t_obj.write(key_str.replace(' ', '').replace('=', '').replace(',', '')+',')
+                    t_obj.write(key_str.replace(' ', '').replace('=', '').replace(',', '') + ',')
             t_obj.write('\n')
 
             # Loop files in the path
@@ -125,8 +128,9 @@ class MyWindow:
 
                         full_path = dirpath + '\\' + filename
                         ind = full_path.index('\\')
-                        t_obj.write(full_path[ind+1:] + ',')     # write file name
+                        t_obj.write(full_path[ind + 1:] + ',')  # write file name
                         found_flag = False
+                        pos_last = 0
                         for i in range(self.count):
                             pre_str = self.ent_s[i].get()
                             key_str = self.ent_m[i].get()
@@ -136,7 +140,11 @@ class MyWindow:
                                 if len(pre_str) != 0:
                                     pos = s_read.find(pre_str)
                                 if pos != -1:
-                                    pos_s = s_read.find(key_str, pos)
+                                    # in the case pre_str not found and repeat_flag enabled
+                                    if pos == 0 and self.repeat_flag.get():
+                                        pos_s = s_read.find(key_str, pos_last)
+                                    else:
+                                        pos_s = s_read.find(key_str, pos)
                                     pos_e = 0
                                     if pos_s != -1:
                                         pos_s = pos_s + len(key_str)
@@ -149,6 +157,7 @@ class MyWindow:
                                         found_flag = True
                                     else:
                                         t_obj.write(',')
+                                    pos_last = pos_s
                                 else:
                                     t_obj.write(',')
                         t_obj.write('\n')
